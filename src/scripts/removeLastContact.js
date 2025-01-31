@@ -3,15 +3,21 @@ import { writeContacts } from '../utils/writeContacts.js';
 
 export const removeLastContact = async () => {
   try {
-    const data = JSON.parse(await readContacts());
-    if (data.length > 0) {
-      data.pop();
-      writeContacts(data);
-    } else {
-      return data;
+    const contacts = await readContacts();
+
+    if (!Array.isArray(contacts)) {
+      throw new Error('Contacts is not an array');
     }
-  } catch (e) {
-    console.error(e);
+
+    if (contacts.length > 0) {
+      contacts.pop();
+      await writeContacts(contacts);
+      console.log('Last contact removed successfully!');
+    } else {
+      console.log('No contacts to remove.');
+    }
+  } catch (error) {
+    console.error('Error removing last contact:', error.message);
   }
 };
 
